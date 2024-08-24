@@ -2,12 +2,14 @@ package com.godigit.taskAppivation.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -25,5 +27,6 @@ public class UserModel {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private List<TaskModel> tasks;
+    @Builder.Default
+    private List<TaskModel> tasks = new ArrayList<>();
 }

@@ -1,9 +1,7 @@
 package com.godigit.taskAppivation.dto;
 
 import com.godigit.taskAppivation.model.CategoryModal;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import com.godigit.taskAppivation.model.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

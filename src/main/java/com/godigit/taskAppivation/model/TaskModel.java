@@ -2,11 +2,13 @@ package com.godigit.taskAppivation.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -18,7 +20,9 @@ public class TaskModel {
     @GeneratedValue
     private Long id;
     private String title;
-    private String description;
+
+    @Builder.Default
+    private String description = "";
     private LocalDate date;
     private String status;
     private String priority;
@@ -26,4 +30,8 @@ public class TaskModel {
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = CategoryModal.class)
     @JoinColumn(name = "category_id")
     private CategoryModal category;
+
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = UserModel.class)
+    @JoinColumn(name = "user_id")
+    private UserModel user;
 }
