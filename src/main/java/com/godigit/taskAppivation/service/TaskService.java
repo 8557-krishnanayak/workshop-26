@@ -6,6 +6,7 @@ import com.godigit.taskAppivation.model.CategoryModal;
 import com.godigit.taskAppivation.model.TaskModel;
 import com.godigit.taskAppivation.model.UserModel;
 import com.godigit.taskAppivation.repository.TaskRepository;
+import com.godigit.taskAppivation.util.TokenUtility;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +32,13 @@ public class TaskService {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    TokenUtility tokenUtility;
+
     @Transactional
-    public void createTask(long userId, TaskDto task) {
+    public void createTask(String token, TaskDto task) {
         // Code to create a new task for a user
+        Long userId = tokenUtility.decodeAsLong(token);
         UserModel userById = userService.getUserById(userId);
         List<TaskDto> tasks = userById.getTasks()
                 .stream()
@@ -56,6 +61,11 @@ public class TaskService {
     public void deleteTask(long taskId) {
         // Code to delete a task
         taskRepository.deleteById(taskId);
+    }
+
+    public List<?> getAllTaskByToken(String token) {
+        Long userId = tokenUtility.decodeAsLong(token);
+        return getAllTasksForUserId(userId);
     }
 
     public List<TaskDto> getAllTasksForUserId(Long userId) {

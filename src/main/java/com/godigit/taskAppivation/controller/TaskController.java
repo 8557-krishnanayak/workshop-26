@@ -14,9 +14,9 @@ public class TaskController {
     @Autowired
     TaskService taskService;
 
-    @PostMapping("/{userId}")
-    public ResponseEntity<?> saveTask(@RequestBody TaskDto taskDto, @PathVariable Long userId) {
-        taskService.createTask(userId, taskDto);
+    @PostMapping
+    public ResponseEntity<?> saveTask(@RequestBody TaskDto taskDto, @RequestHeader String token) {
+        taskService.createTask(token, taskDto);
         return new ResponseEntity<>("Task is Created", HttpStatus.CREATED);
     }
 
@@ -31,8 +31,8 @@ public class TaskController {
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<?> getAllTaskById(@PathVariable Long userId){
-        return ResponseEntity.ok(taskService.getAllTasksForUserId(userId));
+    @GetMapping("/users")
+    public ResponseEntity<?> getAllTaskById(@RequestHeader String token) {
+        return ResponseEntity.ok(taskService.getAllTaskByToken(token));
     }
 }
