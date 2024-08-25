@@ -1,8 +1,10 @@
 package com.godigit.taskAppivation.controller;
 
+import com.godigit.taskAppivation.dto.LoginDto;
 import com.godigit.taskAppivation.exception.ResourceAlreadyExistException;
 import com.godigit.taskAppivation.model.UserModel;
 import com.godigit.taskAppivation.service.UserService;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +24,15 @@ public class UserController {
         return new ResponseEntity<>(userService.registerUser(userModel), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<?>> getUserTask(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.getUserTasks(id));
+    @GetMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
+        return new ResponseEntity<>(userService.login(loginDto), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<?>> getUserTask(@RequestHeader() String token) {
+//        MissingRequestHeaderException
+        return ResponseEntity.ok(userService.getUserTasks(token));
     }
 
     @DeleteMapping("/{id}")
