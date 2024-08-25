@@ -1,14 +1,19 @@
 package com.godigit.taskAppivation.service;
 
+import com.godigit.taskAppivation.dto.CategoryDto;
 import com.godigit.taskAppivation.dto.TaskDto;
+import com.godigit.taskAppivation.model.CategoryModal;
 import com.godigit.taskAppivation.model.TaskModel;
 import com.godigit.taskAppivation.model.UserModel;
 import com.godigit.taskAppivation.repository.TaskRepository;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Service
 public class TaskService {
@@ -21,13 +26,30 @@ public class TaskService {
     UserService userService;
 
     @Autowired
+    CategoriesService categoriesService;
+
+    @Autowired
     ModelMapper modelMapper;
 
+    @Transactional
     public void createTask(long userId, TaskDto task) {
         // Code to create a new task for a user
         UserModel userById = userService.getUserById(userId);
-        List<TaskModel> tasks = userById.getTasks();
-        tasks.add(convertDtoToEntity(task));
+        List<TaskDto> tasks = userById.getTasks()
+                .stream()
+                .map(this::convertEntityToDto)
+                .collect(Collectors.toList());
+
+        CategoryDto receiveCategory = task.getCategory();
+        CategoryDto category = categoriesService.getByName(receiveCategory.getName());
+
+        if(category != null) {
+            task.setCategory(category);
+        } else {
+            task.setCategory(receiveCategory);
+        }
+
+        tasks.add(task);
         userService.saveUser(userById);
     }
 

@@ -17,5 +17,5 @@ public class CategoryDto {
     private String name;
 
 
-    private List<TaskModel> tasks;
+//    private List<TaskModel> tasks;
 }

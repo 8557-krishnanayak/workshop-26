@@ -21,6 +21,10 @@ public class CategoriesService {
     @Autowired
     ModelMapper modelMapper;
 
+    public CategoryDto getByName(String name){
+        return convertEntityToDto(categoriesRepository.findByName(name));
+    }
+
     public CategoryDto createCategory(String categoryName) {
         // Code to create a new category
         CategoryModal categoryBuild = CategoryModal.builder().name(categoryName).build();

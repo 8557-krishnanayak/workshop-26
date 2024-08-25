@@ -20,5 +20,5 @@ public class TaskDto {
     private String status;
     private String priority;
 
-    private CategoryModal category;
+    private CategoryDto category;
 }

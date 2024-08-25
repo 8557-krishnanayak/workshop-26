@@ -2,7 +2,7 @@ package com.godigit.taskAppivation.service;
 
 import com.godigit.taskAppivation.dto.TaskDto;
 import com.godigit.taskAppivation.dto.UserDto;
-import com.godigit.taskAppivation.exception.UserAlreadyExistException;
+import com.godigit.taskAppivation.exception.ResourceAlreadyExistException;
 import com.godigit.taskAppivation.model.TaskModel;
 import com.godigit.taskAppivation.model.UserModel;
 import com.godigit.taskAppivation.repository.UserRepository;
@@ -29,24 +29,31 @@ public class UserService {
         return modelMapper.map(user, UserModel.class);
     }
 
-    public UserDto registerUser(UserModel userData) {
+    public UserDto registerUser(UserModel userData)  {
         UserModel userByUsername = userRepository.findByUsername(userData.getUsername());
         UserModel userByEmail = userRepository.findByEmail(userData.getEmail());
 
-        if ((userByUsername != null) || (userByEmail != null))
-            throw new UserAlreadyExistException("User Already Exists with that credential");
-
-        UserModel save_user = userRepository.save(userData);
+        if ((userByUsername != null) || (userByEmail != null)) {
+            throw new ResourceAlreadyExistException("User Already Exists with that credential");
+        }
+        UserModel save_user = userRepository.save(userByUsername);
 
         return convertToDto(save_user);
     }
 
-    public UserDto saveUser(UserModel userModel) {
-        return convertToDto(userRepository.save(userModel));
+    public void saveUser(UserModel userModel) {
+        convertToDto(userRepository.save(userModel));
     }
 
-    public void updateUserDetails(int userId, String newUsername, String newPassword) {
+    public void updateUserDetails(long userId, UserModel user) {
+        UserModel userById = getUserById(userId);
 
+        if (user.getUsername() != null)
+            userById.setUsername(user.getUsername());
+        if (user.getPassword() != null)
+            userById.setPassword(user.getPassword());
+
+        userRepository.save(userById);
     }
 
 

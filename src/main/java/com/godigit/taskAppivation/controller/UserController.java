@@ -1,5 +1,6 @@
 package com.godigit.taskAppivation.controller;
 
+import com.godigit.taskAppivation.exception.ResourceAlreadyExistException;
 import com.godigit.taskAppivation.model.UserModel;
 import com.godigit.taskAppivation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,14 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUserById(@PathVariable Long id){
+    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.deleteUser(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UserModel user) {
+        userService.updateUserDetails(id, user);
+        return new ResponseEntity<>("user id " + id + " has been updated", HttpStatus.OK);
     }
 
 }
