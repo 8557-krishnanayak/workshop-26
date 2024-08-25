@@ -21,8 +21,8 @@ public class CategoriesService {
     @Autowired
     ModelMapper modelMapper;
 
-    public CategoryDto getByName(String name){
-        return convertEntityToDto(categoriesRepository.findByName(name));
+    public CategoryModal getByName(String name){
+        return categoriesRepository.findByName(name);
     }
 
     public CategoryDto createCategory(String categoryName) {

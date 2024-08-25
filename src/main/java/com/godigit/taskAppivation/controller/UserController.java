@@ -31,7 +31,6 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<?>> getUserTask(@RequestHeader() String token) {
-//        MissingRequestHeaderException
         return ResponseEntity.ok(userService.getUserTasks(token));
     }
 

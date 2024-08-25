@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService {
 
-
     @Autowired
     TaskRepository taskRepository;
 
@@ -40,21 +39,22 @@ public class TaskService {
         // Code to create a new task for a user
         Long userId = tokenUtility.decodeAsLong(token);
         UserModel userById = userService.getUserById(userId);
-        List<TaskDto> tasks = userById.getTasks()
-                .stream()
-                .map(this::convertEntityToDto)
-                .collect(Collectors.toList());
 
-        CategoryDto receiveCategory = task.getCategory();
-        CategoryDto category = categoriesService.getByName(receiveCategory.getName());
+        List<TaskModel> tasks = userById.getTasks();
+
+        TaskModel taskModel = convertDtoToEntity(task);
+        CategoryModal receiveCategory = taskModel.getCategory();
+
+        CategoryModal category = categoriesService.getByName(receiveCategory.getName());
 
         if(category != null) {
-            task.setCategory(category);
+            taskModel.setCategory(category);
         } else {
-            task.setCategory(receiveCategory);
+            taskModel.setCategory(receiveCategory);
         }
 
-        tasks.add(task);
+        tasks.add(taskModel);
+
         userService.saveUser(userById);
     }
 
