@@ -1,6 +1,7 @@
 package com.godigit.taskAppivation.controller;
 
 import com.godigit.taskAppivation.dto.LoginDto;
+import com.godigit.taskAppivation.dto.UserDto;
 import com.godigit.taskAppivation.exception.ResourceAlreadyExistException;
 import com.godigit.taskAppivation.model.UserModel;
 import com.godigit.taskAppivation.service.UserService;
@@ -19,12 +20,13 @@ public class UserController {
     @Autowired
     UserService userService;
 
+
     @PostMapping
-    public ResponseEntity<?> register(@RequestBody UserModel userModel) {
-        return new ResponseEntity<>(userService.registerUser(userModel), HttpStatus.CREATED);
+    public ResponseEntity<?> register(@RequestBody UserDto userDto) {
+        return new ResponseEntity<>(userService.registerUser(userDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDto loginDto) {
         return new ResponseEntity<>(userService.login(loginDto), HttpStatus.OK);
     }
@@ -34,15 +36,15 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserTasks(token));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(userService.deleteUser(id));
+    @DeleteMapping
+    public ResponseEntity<?> deleteUserById(@RequestHeader() String token) {
+        return ResponseEntity.ok(userService.deleteUserByToken(token));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> updateUserById(@PathVariable Long id, @RequestBody UserModel user) {
-        userService.updateUserDetails(id, user);
-        return new ResponseEntity<>("user id " + id + " has been updated", HttpStatus.OK);
+    @PutMapping
+    public ResponseEntity<?> updateUserById(@RequestHeader() String token, @RequestBody UserDto user) {
+        UserDto userDto = userService.updateUserDetailsByToken(token, user);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
 }

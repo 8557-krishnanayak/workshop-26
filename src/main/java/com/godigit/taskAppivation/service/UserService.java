@@ -36,6 +36,11 @@ public class UserService {
         return modelMapper.map(user, UserModel.class);
     }
 
+    public UserDto registerUser(UserDto userDto) {
+        UserModel userModel = convertToEntity(userDto);
+        return registerUser(userModel);
+    }
+
     public UserDto registerUser(UserModel userData) {
         UserModel userByUsername = userRepository.findByUsername(userData.getUsername());
         UserModel userByEmail = userRepository.findByEmail(userData.getEmail());
@@ -44,32 +49,26 @@ public class UserService {
             throw new ResourceAlreadyExistException("User Already Exists with that credential");
         }
         UserModel save_user = userRepository.save(userData);
-
         UserDto userDto = convertToDto(save_user);
-        String token = tokenUtility.getToken(save_user.getId());
-        userDto.setToken(token);
-
+        userDto.setPassword(null);
         return userDto;
     }
 
-    public UserDto login(LoginDto loginDto) {
+    public String login(LoginDto loginDto) {
         UserModel user = userRepository.findByUsername(loginDto.getUsername());
 
-        if(!user.getPassword().equals(loginDto.getPassword()))
+        if (!user.getPassword().equals(loginDto.getPassword()))
             throw new PasswordMismatchException("Password does not match");
 
-        String token = tokenUtility.getToken(user.getId());
-        UserDto userDto = convertToDto(user);
-
-        userDto.setToken(token);
-        return userDto;
+        return tokenUtility.getToken(user.getId());
     }
 
     public void saveUser(UserModel userModel) {
         convertToDto(userRepository.save(userModel));
     }
 
-    public void updateUserDetails(long userId, UserModel user) {
+    //    update by token is implementing this method
+    public UserDto updateUserDetails(long userId, UserModel user) {
         UserModel userById = getUserById(userId);
 
         if (user.getUsername() != null)
@@ -77,13 +76,19 @@ public class UserService {
         if (user.getPassword() != null)
             userById.setPassword(user.getPassword());
 
-        userRepository.save(userById);
+        return convertToDto(userRepository.save(userById));
     }
 
+    //    delete by token is implementing this method
     public String deleteUser(Long userId) {
         // Code to delete a user
         userRepository.deleteById(userId);
         return "user with the id " + userId + " has been Deleted";
+    }
+
+    //    implement by the getUserByToken
+    public UserModel getUserById(long userId) {
+        return userRepository.findById(userId).orElseThrow();
     }
 
     public List<TaskDto> getUserTasks(String token) {
@@ -100,7 +105,21 @@ public class UserService {
         return modelMapper.map(taskDto, TaskModel.class);
     }
 
-    public UserModel getUserById(long userId) {
-        return userRepository.findById(userId).orElseThrow();
+    //    Token Method are below
+    public UserDto updateUserDetailsByToken(String token, UserDto user) {
+        Long user_id = tokenUtility.decodeAsLong(token);
+        UserModel userModel = convertToEntity(user);
+        return updateUserDetails(user_id, userModel);
+    }
+
+    public String deleteUserByToken(String token) {
+        Long user_id = tokenUtility.decodeAsLong(token);
+        return deleteUser(user_id);
+    }
+
+    public UserDto getUserByToken(String token) {
+        Long user_id = tokenUtility.decodeAsLong(token);
+        UserModel userById = getUserById(user_id);
+        return convertToDto(userById);
     }
 }

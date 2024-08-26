@@ -41,4 +41,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> jwtDecodeException(JWTDecodeException e) {
         return new ResponseEntity<>("Token is not valid: " + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<?> nullPointerException(NullPointerException e){
+        return new ResponseEntity<>("No such value or value is null: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

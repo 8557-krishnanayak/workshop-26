@@ -1,25 +1,28 @@
 package com.godigit.taskAppivation.dto;
 
-import com.godigit.taskAppivation.model.TaskModel;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class UserDto {
     private Long id;
     private String username;
-    private String email;
-    private List<TaskDto> tasks;
 
-    private String token;
+    @JsonIgnoreProperties
+    private String password;
+    private String email;
+
+    @Builder.Default
+    private List<TaskDto> tasks = new ArrayList<>();
 }
