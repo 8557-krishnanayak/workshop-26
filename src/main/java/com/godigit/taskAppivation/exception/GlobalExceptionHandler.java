@@ -46,4 +46,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> nullPointerException(NullPointerException e){
         return new ResponseEntity<>("No such value or value is null: " + e.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(CannotAssignToUserWhichIsAlreadyCompletedException.class)
+    public ResponseEntity<?> cannotAssignToUserWhichIsAlreadyCompletedException(CannotAssignToUserWhichIsAlreadyCompletedException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

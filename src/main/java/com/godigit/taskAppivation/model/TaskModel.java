@@ -1,10 +1,10 @@
 package com.godigit.taskAppivation.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -28,11 +28,13 @@ public class TaskModel {
     private String status;
     private String priority;
 
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = CategoryModal.class)
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = CategoryModal.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private CategoryModal category;
 
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = UserModel.class)
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = UserModel.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private UserModel user;
 }

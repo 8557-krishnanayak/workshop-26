@@ -88,12 +88,14 @@ public class UserService {
 
     //    implement by the getUserByToken
     public UserModel getUserById(long userId) {
-        return userRepository.findById(userId).orElseThrow();
+        return userRepository
+                .findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not exist with the user id " + userId));
     }
 
     public List<TaskDto> getUserTasks(String token) {
         Long userId = tokenUtility.decodeAsLong(token);
-        UserModel user = userRepository.findById(userId).orElseThrow();
+        UserModel user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not exist with the user id " + userId));
         return user.getTasks().stream().map(this::convertToDto).toList();
     }
 
